@@ -6,7 +6,7 @@ from torch import Tensor
 from mmdet.structures import OptSampleList, SampleList
 from mmyolo.models.detectors import YOLODetector
 from mmyolo.registry import MODELS
-
+import loralib as lora
 
 @MODELS.register_module()
 class YOLOWorldDetector(YOLODetector):
@@ -148,8 +148,8 @@ class SimpleYOLOWorldDetector(YOLODetector):
 
             if use_mlp_adapter:
                 self.adapter = nn.Sequential(
-                    nn.Linear(prompt_dim, prompt_dim * 2), nn.ReLU(True),
-                    nn.Linear(prompt_dim * 2, prompt_dim))
+                    lora.Linear(prompt_dim, prompt_dim * 2, r=32), nn.GELU(),
+                    lora.Linear(prompt_dim * 2, prompt_dim, r=16))
             else:
                 self.adapter = None
 
