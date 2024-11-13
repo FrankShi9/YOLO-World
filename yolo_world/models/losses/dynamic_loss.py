@@ -14,7 +14,7 @@ class CoVMSELoss(nn.Module):
     def __init__(self,
                  dim: int = 0,
                  reduction: str = 'mean',
-                 loss_weight: float = torch.randint(0,1,(1)),
+                 loss_weight: float = torch.normal(0, 0.3),
                  eps: float = 1e-6) -> None:
         super().__init__()
         self.dim = dim
