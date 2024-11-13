@@ -22,7 +22,7 @@ from mmyolo.registry import MODELS
 from mmyolo.models.dense_heads import YOLOv8HeadModule, YOLOv8Head
 from mmyolo.models.utils import gt_instances_preprocess
 from mmcv.cnn.bricks import build_norm_layer
-
+import loralib as lora
 
 @MODELS.register_module()
 class ContrastiveHead(BaseModule):
@@ -125,7 +125,7 @@ class RepBNContrastiveHead(BaseModule):
 
         super().__init__(init_cfg=init_cfg)
         self.norm = build_norm_layer(norm_cfg, embed_dims)[1]
-        self.conv = nn.Conv2d(embed_dims, num_guide_embeds, kernel_size=1)
+        self.conv = lora.Conv2d(embed_dims, num_guide_embeds, kernel_size=1, r=32)
 
     def forward(self, x: Tensor) -> Tensor:
         """Forward function of contrastive learning."""
@@ -196,9 +196,9 @@ class YOLOWorldHeadModule(YOLOv8HeadModule):
                                padding=1,
                                norm_cfg=self.norm_cfg,
                                act_cfg=self.act_cfg),
-                    nn.Conv2d(in_channels=reg_out_channels,
+                    lora.Conv2d(in_channels=reg_out_channels,
                               out_channels=4 * self.reg_max,
-                              kernel_size=1)))
+                              kernel_size=1, r=32)))
             self.cls_preds.append(
                 nn.Sequential(
                     ConvModule(in_channels=self.in_channels[i],
@@ -215,9 +215,9 @@ class YOLOWorldHeadModule(YOLOv8HeadModule):
                                padding=1,
                                norm_cfg=self.norm_cfg,
                                act_cfg=self.act_cfg),
-                    nn.Conv2d(in_channels=cls_out_channels,
+                    lora.Conv2d(in_channels=cls_out_channels,
                               out_channels=self.embed_dims,
-                              kernel_size=1)))
+                              kernel_size=1, r=16)))
             if self.use_bn_head:
                 self.cls_contrasts.append(
                     BNContrastiveHead(self.embed_dims,
