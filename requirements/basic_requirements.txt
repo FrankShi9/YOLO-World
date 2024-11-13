@@ -7,3 +7,4 @@ mmyolo==0.6.0
 timm==0.6.13
 transformers==4.36.2
 albumentations
+loralib
