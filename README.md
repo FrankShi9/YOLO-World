@@ -30,7 +30,7 @@
 </div>
 </div>
 
-## Notice
+## Notice (Local dev)
 
 **YOLO-World is still under active development!**
 
